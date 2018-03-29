@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Executed during heroku push process.
+# See https://github.com/heroku/heroku-buildpack-python/blob/master/bin/steps/hooks/post_compile
+
+export PATH=/app/gettext/bin:$PATH
+
+if ! [ -x "$(command -v msgfmt)" ]; then
+    echo 'Skipping *.mo compilation due to absence of gettext' >&2
+else
+    ./manage.py compilemessages
+fi

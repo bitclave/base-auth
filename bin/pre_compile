@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Executed during heroku push process.
+# See https://github.com/heroku/heroku-buildpack-python/blob/master/bin/steps/hooks/pre_compile
+
+# Compile scss before execution of Django's collectstatic command
+
+if ! [ -x "$(command -v gem)" ]; then
+    echo 'Skipping gems installation due to absence of gem' >&2
+    exit 1
+fi
+
+export GEM_PATH=/app/vendor/bundle/ruby/:
+gem install bundler
+bundle install
+
+if ! [ -x "$(command -v sass)" ]; then
+    echo 'Unable to compile *.css due to absence of sass' >&2
+    exit 1
+fi
+
+mkdir -p ./statics/css
+sass --style=compressed --sourcemap=none -f --scss --no-cache ./ads/templates/style.scss:./statics/css/style.css

@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  mail:
+    container_name: base-auth-mail
+    image: schickling/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"

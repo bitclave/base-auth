@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Translations
+*.mo
+*.pot
+
+# virtualenv
+.env
+
+# pycharm
+.idea/
+
+# scss
+.sass-cache
+*.css
+*.css.map
+
+.DS_Store
+.dir-locals.el
+.vscode
+.testrpcdb
+
+media/
+.mypy_cache
