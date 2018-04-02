@@ -1,37 +1,25 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
 *$py.class
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
 *.cover
-
-# Translations
-*.mo
-*.pot
-
-# virtualenv
-.env
-
-# pycharm
-.idea/
-
-# scss
-.sass-cache
 *.css
 *.css.map
-
+*.mo
+*.pot
+*.py[cod]
 .DS_Store
+.cache
+.coverage
+.coverage.*
 .dir-locals.el
-.vscode
-.testrpcdb
-
-media/
+.env
+.idea/
 .mypy_cache
+.sass-cache
+.tern-port
+.testrpcdb
+.tox/
+.vscode
+__pycache__/
+coverage.xml
+htmlcov/
+media/
+nosetests.xml

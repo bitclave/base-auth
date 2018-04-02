@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div class="content">
+    <main class="main">
+        <div class="container">
+            <div class="row">
+                <div>
+                    <label for="input-mnemonic">
+                        {% trans "Mnemonic" %}
+                    </label>
+                    <input type="text" id="input-mnemonic" placeholder="Mnemonic">
+                </div>
+                <div>
+                    <button id="button-signin">
+                        {% trans "Sing In" %}
+                    </button>
+                </div>
+                <div>
+                    <button id="button-signup">
+                        {% trans "Sign Up" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+ {% include "widget/IFrameRPC.js" %}
+ window.addEventListener('load', function () {
+     const rpc = new IFrameRPC(window.opener, "{{ SITE_URL }}");
+     const onClick = function () {
+         const mnemonic = $('#input-mnemonic').val();
+
+         if (!mnemonic) {
+             return;
+         }
+
+         rpc.call('submitMnenomic', [mnemonic]);
+         window.close();
+     };
+
+     $('#button-signin').on('click', onClick);
+     $('#button-signup').on('click', onClick);
+ });
+</script>
+{% endblock %}

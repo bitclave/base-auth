@@ -6,7 +6,6 @@ from base_auth.tests import factories
 from base_auth.users.models import User
 
 register(factories.UserFactory)
-register(factories.ResetPasswordFactory)
 
 
 @pytest.fixture()

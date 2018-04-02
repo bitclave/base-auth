@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<div id="base-login"></div>
+<div id="info"></div>
+<button id="get-all-offers">
+    {% trans "Get all offers" %}
+</button>
+<button id="get-data">
+    {% trans "getData" %}
+</button>
+<button id="update-data">
+    {% trans "updateData (with random values)" %}
+</button>
+
+<script src="{% url 'widget:widget-js' %}"></script>
+<script>
+ window.addEventListener('load', function () {
+     const baseAuth = new BASEAuth();
+
+     baseAuth.insertLoginButton("#base-login");
+     baseAuth.waitForLogin().then(function (rpcCall) {
+         const account = rpcCall.args[0];
+         $("#info").text("Logged in! Public key: " + account.publicKey);
+     });
+
+     $("#get-all-offers").on("click", function () {
+         baseAuth.getAllOffers().then(function (response) {
+             alert(JSON.stringify([...response]));
+         });
+     });
+
+     $("#get-data").on("click", function () {
+         baseAuth.getData().then(function (response) {
+             alert(JSON.stringify([...response]));
+         });
+     });
+
+     $("#update-data").on("click", function () {
+         const data = {};
+         data[Math.random().toString()] = Math.random().toString();
+         baseAuth.updateData(data).then(function (response) {
+             alert(JSON.stringify([...response]));
+         });
+     });
+ });
+</script>
+{% endblock %}
