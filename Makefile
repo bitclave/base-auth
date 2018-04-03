@@ -19,6 +19,7 @@ clean:
 	find . -name "*.pyc" -exec rm -f {} \;
 
 heroku_buildpacks_prod:
+	heroku labs:enable runtime-dyno-metadata --remote heroku_prod
 	heroku buildpacks:clear --remote heroku_prod
 	heroku buildpacks:set --remote heroku_prod --index 1 https://github.com/piotras/heroku-buildpack-gettext.git
 	heroku buildpacks:set --remote heroku_prod --index 2 heroku/ruby
