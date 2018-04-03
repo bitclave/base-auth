@@ -39,6 +39,10 @@ function IFrameRPC(targetWindow, targetOrigin) {
     this._listeners = {};
     this._currentCallId = 1;
 
+    if (this._targetOrigin !== '*' && this._targetOrigin[this._targetOrigin.length - 1] !== '/') {
+        this._targetOrigin += '/';
+    }
+
     window.addEventListener('message', this._onMessage.bind(this));
 }
 
@@ -73,7 +77,12 @@ IFrameRPC.prototype.once = function (methodName) {
 };
 
 IFrameRPC.prototype._onMessage = function (event) {
-    if (this._targetOrigin !== '*' && event.origin !== this._targetOrigin) {
+    let eventOrigin = event.origin;
+    if (eventOrigin[eventOrigin.length - 1] !== '/') {
+        eventOrigin = event.origin + '/';
+    }
+
+    if (this._targetOrigin !== '*' && eventOrigin !== this._targetOrigin) {
         return;
     }
 
