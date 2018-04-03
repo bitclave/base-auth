@@ -1,5 +1,8 @@
 import os
 
+from .base import BASE_DIR, MIDDLEWARE
+
+STATIC_URL = '/static/'
 
 if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
@@ -14,7 +17,14 @@ if 'AWS_STORAGE_BUCKET_NAME' in os.environ:
     HEROKU_SLUG_COMMIT = os.environ['HEROKU_SLUG_COMMIT']
 
     STATICFILES_LOCATION = f'{AWS_LOCATION}-static/{HEROKU_SLUG_COMMIT}'
-    STATICFILES_STORAGE = 'base_auth.common.storages.StaticStorage'
+    STATICFILES_STORAGE = 'base_auth.site.storages.StaticStorage'
 
     MEDIAFILES_LOCATION = f'{AWS_LOCATION}-media'
-    DEFAULT_FILE_STORAGE = 'base_auth.common.storages.MediaStorage'
+    DEFAULT_FILE_STORAGE = 'base_auth.site.storages.MediaStorage'
+
+    STATIC_ROOT = None
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'statics'), )
+    MIDDLEWARE.insert(0, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

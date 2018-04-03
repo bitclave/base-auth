@@ -3,7 +3,6 @@ from datetime import timedelta
 
 import dj_database_url
 import dj_redis_url
-from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,7 +35,6 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'raven.contrib.django.raven_compat',
-    'social_django',
     'storages',
     'two_factor',
     'waffle',
@@ -57,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     'waffle.middleware.WaffleMiddleware',
 ]
 
@@ -130,12 +127,6 @@ LOCALE_PATHS = (
     os.path.join(PROJECT_DIR, 'locale'),
 )
 
-
-STATIC_URL = '/static/'
-STATIC_ROOT = None
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'statics'),
-)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/prod/media/'
