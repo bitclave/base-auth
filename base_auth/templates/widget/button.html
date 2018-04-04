@@ -11,26 +11,13 @@
  {% include "widget/IFrameRPC.js" %}
  {% include "widget/button.js" %}
 
- const $button = $('.base-auth__open-popup-button');
- const widget = new BASEAuthWidget();
- const onClickLogin = function () {
-     const widgetOrigin = "{{ SITE_URL }}";
-     const popup = window.open(
+ window.addEventListener("load", function () {
+     new BASEAuthWidget(
+         "https://base2-bitclva-com.herokuapp.com",
+         $('.base-auth__open-popup-button'),
          "{% url 'widget:popup' %}",
          "{% trans 'Continue with BitClave' %}",
-         "height=500, width=500'"
+         "{{ SITE_URL }}"
      );
-     const popupRpc = new IFrameRPC(popup, widgetOrigin);
-
-     popupRpc.once('submitMnenomic').then(function (rpcCall) {
-         $button.prop('disabled', true);
-         $button.text('Loading...');
-         return widget.login(rpcCall.args[0]);
-     }).then(function () {
-         $button.text('Logged in!');
-     });
-     popup.focus();
- };
-
- $button.on('click', onClickLogin);
+ });
 </script>

@@ -1,11 +1,32 @@
-function BASEAuthWidget() {
-    this._baseNodeApi = new Base.NodeAPI('https://base2-bitclva-com.herokuapp.com');
+function BASEAuthWidget(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrigin) {
+    this._popupUrl = popupUrl;
+    this._popupName = popupName;
+    this._widgetOrigin = widgetOrigin;
+
+    this._baseNodeApi = new Base.NodeAPI(baseNodeApiUrl);
     this._parent = window.parent;
     this._parentOrigin = null;
     this._parentRpc = null;
+
+    $button.on('click', this._onClickLogin.bind(this));
 }
 
-BASEAuthWidget.prototype.login = function (mnemonic) {
+BASEAuthWidget.prototype._onClickLogin = function (event) {
+    const $button = $(event.target);
+    const popup = window.open(this._popupUrl, this._popupName, "height=500, width=500");
+    const popupRpc = new IFrameRPC(popup, this._widgetOrigin);
+
+    popupRpc.once('submitMnenomic').then(function (rpcCall) {
+        $button.prop('disabled', true);
+        $button.text('Loading...');
+        return this._login(rpcCall.args[0]);
+    }.bind(this)).then(function () {
+        $button.text('Logged in!');
+    });
+    popup.focus();
+};
+
+BASEAuthWidget.prototype._login = function (mnemonic) {
     const parentRpc = new IFrameRPC(this._parent, '*');
     return parentRpc.call('getOrigin', []).then(function (origin) {
         this._parentOrigin = origin;
