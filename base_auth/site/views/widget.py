@@ -7,8 +7,8 @@ class ExampleView(TemplateView):
     template_name = 'widget/example.html'
 
 
-class WidgetJSView(TemplateView):
-    template_name = 'widget/widget.js'
+class WidgetSDKView(TemplateView):
+    template_name = 'widget/sdk.js'
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')
