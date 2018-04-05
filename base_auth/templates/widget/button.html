@@ -7,12 +7,10 @@
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/Base.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 <script>
- {% include "widget/IFrameRPC.js" %}
- {% include "widget/button.js" %}
-
  window.addEventListener("load", function () {
-     new BASEAuthWidget(
+     new BASEAuth.Widget(
          "https://base2-bitclva-com.herokuapp.com",
          $('.base-auth__open-popup-button'),
          "{% url 'widget:popup' %}",

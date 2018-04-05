@@ -22,4 +22,5 @@ __pycache__/
 coverage.xml
 htmlcov/
 media/
+node_modules/
 nosetests.xml

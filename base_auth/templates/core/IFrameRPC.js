@@ -32,7 +32,7 @@ RPCCall.prototype.respond = function (targetWindow, targetOrigin, value) {
     );
 };
 
-function IFrameRPC(targetWindow, targetOrigin) {
+export default function IFrameRPC(targetWindow, targetOrigin) {
     this._targetWindow = targetWindow;
     this._targetOrigin = targetOrigin;
     this._calls = {};

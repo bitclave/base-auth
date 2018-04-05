@@ -16,25 +16,25 @@
     updateData (with random values)
 </button>
 
-<script src="{% url 'widget:sdk.js' %}"></script>
+<script src="{% static 'js/sdk.js' %}"></script>
 <script>
  window.addEventListener('load', function () {
-     const baseAuth = new BASEAuth();
+     const widget = new BASEAuthSDK.Widget();
 
-     baseAuth.insertLoginButton("#base-login");
-     baseAuth.waitForLogin().then(function (rpcCall) {
+     widget.insertLoginButton("#base-login");
+     widget.waitForLogin().then(function (rpcCall) {
          const account = rpcCall.args[0];
          $("#info").text("Logged in! Public key: " + account.publicKey);
      });
 
      $("#get-all-offers").on("click", function () {
-         baseAuth.getAllOffers().then(function (response) {
+         widget.getAllOffers().then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });
 
      $("#get-data").on("click", function () {
-         baseAuth.getData().then(function (response) {
+         widget.getData().then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });
@@ -42,7 +42,7 @@
      $("#update-data").on("click", function () {
          const data = {};
          data[Math.random().toString()] = Math.random().toString();
-         baseAuth.updateData(data).then(function (response) {
+         widget.updateData(data).then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });

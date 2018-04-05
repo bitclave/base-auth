@@ -1,4 +1,6 @@
-function BASEAuthWidget(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrigin) {
+import IFrameRPC from '../core/IFrameRPC.js';
+
+export default function Widget(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrigin) {
     this._popupUrl = popupUrl;
     this._popupName = popupName;
     this._widgetOrigin = widgetOrigin;
@@ -11,7 +13,7 @@ function BASEAuthWidget(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrig
     $button.on('click', this._onClickLogin.bind(this));
 }
 
-BASEAuthWidget.prototype._onClickLogin = function (event) {
+Widget.prototype._onClickLogin = function (event) {
     const $button = $(event.target);
     const popup = window.open(this._popupUrl, this._popupName, "height=500, width=500");
     const popupRpc = new IFrameRPC(popup, this._widgetOrigin);
@@ -26,7 +28,7 @@ BASEAuthWidget.prototype._onClickLogin = function (event) {
     popup.focus();
 };
 
-BASEAuthWidget.prototype._login = function (mnemonic) {
+Widget.prototype._login = function (mnemonic) {
     const parentRpc = new IFrameRPC(this._parent, '*');
     return parentRpc.call('getOrigin', []).then(function (origin) {
         this._parentOrigin = origin;
@@ -48,25 +50,25 @@ BASEAuthWidget.prototype._login = function (mnemonic) {
     }.bind(this));
 };
 
-BASEAuthWidget.prototype._listen = function () {
+Widget.prototype._listen = function () {
     this._parentRpc.listen('offerManager.getAllOffers', this._getAllOffers.bind(this));
     this._parentRpc.listen('profileManager.getData', this._getData.bind(this));
     this._parentRpc.listen('profileManager.updateData', this._updateData.bind(this));
 };
 
-BASEAuthWidget.prototype._respond = function (rpcCall, response) {
+Widget.prototype._respond = function (rpcCall, response) {
     rpcCall.respond(this._parent, this._parentOrigin, response);
 };
 
-BASEAuthWidget.prototype._getAllOffers = function (rpcCall) {
+Widget.prototype._getAllOffers = function (rpcCall) {
     this._baseNodeApi.offerManager.getAllOffers().then(this._respond.bind(this, rpcCall));
 };
 
-BASEAuthWidget.prototype._getData = function (rpcCall) {
+Widget.prototype._getData = function (rpcCall) {
     this._baseNodeApi.profileManager.getData().then(this._respond.bind(this, rpcCall));
 };
 
-BASEAuthWidget.prototype._updateData = function (rpcCall) {
+Widget.prototype._updateData = function (rpcCall) {
     const dataObj = rpcCall.args[0];
     const dataMap = new Map(Object.keys(dataObj).map(key => [key, dataObj[key]]));
 

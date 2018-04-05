@@ -11,6 +11,9 @@ endif
 scss:
 	scss ./base_auth/templates/style.scss:./statics/css/style.css --watch
 
+js:
+	npm run build
+
 translate:
 	./manage.py makemessages --all
 	./manage.py compilemessages

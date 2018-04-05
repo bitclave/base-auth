@@ -29,10 +29,10 @@
     </main>
 </div>
 
+<script src="{% static 'js/main.js' %}"></script>
 <script>
- {% include "widget/IFrameRPC.js" %}
  window.addEventListener('load', function () {
-     const rpc = new IFrameRPC(window.opener, "{{ SITE_URL }}");
+     const rpc = new BASEAuth.IFrameRPC(window.opener, "{{ SITE_URL }}");
      const onClick = function () {
          const mnemonic = $('#input-mnemonic').val();
 

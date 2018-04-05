@@ -1,37 +1,40 @@
-{% include "widget/IFrameRPC.js" %}
+import IFrameRPC from './core/IFrameRPC.js';
+import Settings from './settings.js';
 
-function BASEAuth() {
+export {Widget};
+
+function Widget() {
     this._widgetIframe = null;
     this._widgetRpc = null;
 }
 
-BASEAuth.prototype.insertLoginButton = function (cssSelector) {
+Widget.prototype.insertLoginButton = function (cssSelector) {
     const iframe = document.createElement('iframe');
-    iframe.src = "{{ SITE_URL }}{% url 'widget:button' %}";
+    iframe.src = Settings.siteUrl() + Settings.widgetLocation();
     iframe.sandbox = 'allow-scripts allow-popups allow-same-origin allow-modals';
 
     const el = document.querySelector(cssSelector);
     el.appendChild(iframe);
     this._widgetIframe = iframe;
 
-    this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, "{{ SITE_URL }}");
+    this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, Settings.siteUrl());
     this._widgetRpc.once('getOrigin').then(function (rpcCall) {
-        rpcCall.respond(this._widgetIframe.contentWindow, "{{ SITE_URL }}", window.location.origin);
+        rpcCall.respond(this._widgetIframe.contentWindow, Settings.siteUrl(), window.location.origin);
     }.bind(this));
 };
 
-BASEAuth.prototype.waitForLogin = function () {
+Widget.prototype.waitForLogin = function () {
     return this._widgetRpc.once('onLogin');
 };
 
-BASEAuth.prototype.getAllOffers = function () {
+Widget.prototype.getAllOffers = function () {
     return this._widgetRpc.call('offerManager.getAllOffers', []);
 };
 
-BASEAuth.prototype.getData = function () {
+Widget.prototype.getData = function () {
     return this._widgetRpc.call('profileManager.getData', []);
 };
 
-BASEAuth.prototype.updateData = function (data) {
+Widget.prototype.updateData = function (data) {
     return this._widgetRpc.call('profileManager.updateData', [data]);
 };

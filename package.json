@@ -1,0 +1,24 @@
+{
+    "name": "base-auth",
+    "version": "1.0.0",
+    "description": "base-auth =========",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bitclave/base-auth.git"
+    },
+    "keywords": [],
+    "author": "",
+    "bugs": {
+        "url": "https://github.com/bitclave/base-auth/issues"
+    },
+    "homepage": "https://github.com/bitclave/base-auth#readme",
+    "devDependencies": {
+        "webpack": "^4.5.0",
+        "webpack-cli": "^2.0.13"
+    }
+}
