@@ -1,6 +1,6 @@
 import IFrameRPC from '../core/IFrameRPC.js';
 
-export default function Widget(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrigin) {
+export default function WidgetView(baseNodeApiUrl, $button, popupUrl, popupName, widgetOrigin) {
     this._popupUrl = popupUrl;
     this._popupName = popupName;
     this._widgetOrigin = widgetOrigin;
@@ -13,7 +13,7 @@ export default function Widget(baseNodeApiUrl, $button, popupUrl, popupName, wid
     $button.on('click', this._onClickLogin.bind(this));
 }
 
-Widget.prototype._onClickLogin = function (event) {
+WidgetView.prototype._onClickLogin = function (event) {
     const $button = $(event.target);
     const popup = window.open(this._popupUrl, this._popupName, "height=500, width=500");
     const popupRpc = new IFrameRPC(popup, this._widgetOrigin);
@@ -28,7 +28,7 @@ Widget.prototype._onClickLogin = function (event) {
     popup.focus();
 };
 
-Widget.prototype._login = function (mnemonic) {
+WidgetView.prototype._login = function (mnemonic) {
     const parentRpc = new IFrameRPC(this._parent, '*');
     return parentRpc.call('getOrigin', []).then(function (origin) {
         this._parentOrigin = origin;
@@ -50,25 +50,25 @@ Widget.prototype._login = function (mnemonic) {
     }.bind(this));
 };
 
-Widget.prototype._listen = function () {
+WidgetView.prototype._listen = function () {
     this._parentRpc.listen('offerManager.getAllOffers', this._getAllOffers.bind(this));
     this._parentRpc.listen('profileManager.getData', this._getData.bind(this));
     this._parentRpc.listen('profileManager.updateData', this._updateData.bind(this));
 };
 
-Widget.prototype._respond = function (rpcCall, response) {
+WidgetView.prototype._respond = function (rpcCall, response) {
     rpcCall.respond(this._parent, this._parentOrigin, response);
 };
 
-Widget.prototype._getAllOffers = function (rpcCall) {
+WidgetView.prototype._getAllOffers = function (rpcCall) {
     this._baseNodeApi.offerManager.getAllOffers().then(this._respond.bind(this, rpcCall));
 };
 
-Widget.prototype._getData = function (rpcCall) {
+WidgetView.prototype._getData = function (rpcCall) {
     this._baseNodeApi.profileManager.getData().then(this._respond.bind(this, rpcCall));
 };
 
-Widget.prototype._updateData = function (rpcCall) {
+WidgetView.prototype._updateData = function (rpcCall) {
     const dataObj = rpcCall.args[0];
     const dataMap = new Map(Object.keys(dataObj).map(key => [key, dataObj[key]]));
 

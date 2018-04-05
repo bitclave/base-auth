@@ -32,20 +32,12 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script>
  window.addEventListener('load', function () {
-     const rpc = new BASEAuth.IFrameRPC(window.opener, "{{ SITE_URL }}");
-     const onClick = function () {
-         const mnemonic = $('#input-mnemonic').val();
-
-         if (!mnemonic) {
-             return;
-         }
-
-         rpc.call('submitMnenomic', [mnemonic]);
-         window.close();
-     };
-
-     $('#button-signin').on('click', onClick);
-     $('#button-signup').on('click', onClick);
+     new BASEAuth.PopupView(
+         "{{ SITE_URL }}",
+         $('#input-mnemonic'),
+         $('#button-signup'),
+         $('#button-signin')
+     );
  });
 </script>
 {% endblock %}

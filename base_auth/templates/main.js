@@ -1,7 +1,9 @@
 import IFrameRPC from './core/IFrameRPC.js';
-import Widget from './widget/button.js';
+import PopupView from './widget/popup.js';
+import WidgetView from './widget/button.js';
 
 export {
     IFrameRPC,
-    Widget,
+    PopupView,
+    WidgetView,
 }

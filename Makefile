@@ -11,8 +11,11 @@ endif
 scss:
 	scss ./base_auth/templates/style.scss:./statics/css/style.css --watch
 
-js:
-	npm run build
+js_prod:
+	npm run build_prod
+
+js_dev:
+	npm run build_dev
 
 translate:
 	./manage.py makemessages --all

@@ -10,7 +10,7 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script>
  window.addEventListener("load", function () {
-     new BASEAuth.Widget(
+     new BASEAuth.WidgetView(
          "https://base2-bitclva-com.herokuapp.com",
          $('.base-auth__open-popup-button'),
          "{% url 'widget:popup' %}",
