@@ -22,7 +22,7 @@ export default class PopupView {
         }
 
         this.widgetRpc.call('submitMnenomic', [mnemonic]);
-        // window.close();
+        window.close();
     }
 
     _parseMnemonic() {

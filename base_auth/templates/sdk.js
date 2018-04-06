@@ -1,5 +1,5 @@
 import IFrameRPC from './core/IFrameRPC.js';
-import Settings from './settings.js';
+import Settings from 'settings';
 
 export {Widget};
 
