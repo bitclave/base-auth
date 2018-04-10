@@ -22,19 +22,18 @@
      const widget = new BASEAuthSDK.Widget();
 
      widget.insertLoginButton("#base-login");
-     widget.waitForLogin().then(function (rpcCall) {
-         const account = rpcCall.args[0];
+     widget.waitForLogin().then(function (account) {
          $("#info").text("Logged in! Public key: " + account.publicKey);
      });
 
      $("#get-all-offers").on("click", function () {
-         widget.getAllOffers().then(function (response) {
+         widget.baseNodeAPI.getAllOffers().then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });
 
      $("#get-data").on("click", function () {
-         widget.getData().then(function (response) {
+         widget.baseNodeAPI.getData().then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });
@@ -42,7 +41,7 @@
      $("#update-data").on("click", function () {
          const data = {};
          data[Math.random().toString()] = Math.random().toString();
-         widget.updateData(data).then(function (response) {
+         widget.baseNodeAPI.updateData(data).then(function (response) {
              alert(JSON.stringify([...response]));
          });
      });

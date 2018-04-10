@@ -3,38 +3,57 @@ import Settings from 'settings';
 
 export {Widget};
 
-function Widget() {
-    this._widgetIframe = null;
-    this._widgetRpc = null;
+class BASENodeAPI {
+    constructor(widgetRpc) {
+        this._widgetRpc = widgetRpc;
+    }
+
+    getAllOffers () {
+        return this._widgetRpc.call('offerManager.getAllOffers', []);
+    }
+
+    getData() {
+        return this._widgetRpc.call('profileManager.getData', []);
+    }
+
+    updateData(data) {
+        return this._widgetRpc.call('profileManager.updateData', [data]);
+    }
 }
 
-Widget.prototype.insertLoginButton = function (cssSelector) {
-    const iframe = document.createElement('iframe');
-    iframe.src = Settings.siteUrl() + Settings.widgetLocation();
-    iframe.sandbox = 'allow-scripts allow-popups allow-same-origin allow-modals';
+class Widget {
+    constructor() {
+        this._widgetIframe = null;
+        this._widgetRpc = null;
+        this._baseNodeApi = null;
+    }
 
-    const el = document.querySelector(cssSelector);
-    el.appendChild(iframe);
-    this._widgetIframe = iframe;
+    get baseNodeAPI() {
+        return this._baseNodeApi;
+    }
 
-    this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, Settings.siteUrl());
-    this._widgetRpc.once('getOrigin').then(function (rpcCall) {
-        rpcCall.respond(this._widgetIframe.contentWindow, Settings.siteUrl(), window.location.origin);
-    }.bind(this));
-};
+    insertLoginButton(cssSelector) {
+        const iframe = document.createElement('iframe');
+        iframe.src = Settings.siteUrl() + Settings.widgetLocation();
+        iframe.sandbox = 'allow-scripts allow-popups allow-same-origin allow-forms allow-modals';
 
-Widget.prototype.waitForLogin = function () {
-    return this._widgetRpc.once('onLogin');
-};
+        const el = document.querySelector(cssSelector);
+        el.appendChild(iframe);
+        this._widgetIframe = iframe;
 
-Widget.prototype.getAllOffers = function () {
-    return this._widgetRpc.call('offerManager.getAllOffers', []);
-};
+        this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, Settings.siteUrl());
+        this._widgetRpc.once('getOrigin').then(function (rpcCall) {
+            rpcCall.respond(
+                this._widgetIframe.contentWindow, Settings.siteUrl(), window.location.origin
+            );
+            this._baseNodeApi = new BASENodeAPI(this._widgetRpc);
+        }.bind(this));
+    }
 
-Widget.prototype.getData = function () {
-    return this._widgetRpc.call('profileManager.getData', []);
-};
-
-Widget.prototype.updateData = function (data) {
-    return this._widgetRpc.call('profileManager.updateData', [data]);
-};
+    waitForLogin() {
+        return this._widgetRpc.once('onLogin').then(function (rpcCall) {
+            const account = rpcCall.args[0];
+            return account;
+        });
+    }
+}
