@@ -1,3 +1,5 @@
+git+https://github.com/mfranciszkiewicz/pyelliptic@849f3fc7127c05dbd4c84a3a263517f726700bf2
+
 apscheduler==3.3.1
 boto3==1.4.4
 brotlipy==0.7.0
@@ -22,6 +24,7 @@ gunicorn==19.7.1
 lxml==4.1.1
 pillow==4.2.1
 psycopg2==2.7.2
+py-mini-racer==0.1.13
 pycountry==17.5.14
 pyquery==1.4.0
 python-intercom==3.1.0
