@@ -41,17 +41,8 @@ WidgetView.prototype._login = function (mnemonic) {
         this._parentOrigin = origin;
         this._parentRpc = new IFrameRPC(this._parent, this._parentOrigin);
     }.bind(this)).then(function () {
-        return this._baseNodeApi.accountManager.checkAccount(mnemonic);
-    }.bind(this)).then(
-        function (account) {
-            return account;
-        },
-        function (response) {
-            if (response.status == 404) {
-                return this._baseNodeApi.accountManager.registration(mnemonic);
-            }
-        }.bind(this)
-    ).then(function (account) {
+        return this._baseNodeApi.accountManager.authenticationByPassPhrase(mnemonic);
+    }.bind(this)).then(function (account) {
         this._parentRpc.call('onLogin', [account]);
         this._listen();
     }.bind(this));
