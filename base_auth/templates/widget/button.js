@@ -5,12 +5,19 @@ export default function WidgetView(baseNodeApiUrl, $button, popupUrl, popupName,
     this._popupName = popupName;
     this._widgetOrigin = widgetOrigin;
 
-    this._baseNodeApi = new Base.NodeAPI(baseNodeApiUrl);
     this._parent = window.parent;
     this._parentOrigin = null;
     this._parentRpc = null;
 
     $button.on('click', this._onClickLogin.bind(this));
+
+    const httpTransport = BitclaveBase.TransportFactory.createHttpTransport(baseNodeApiUrl);
+    const keyPairHelper = BitclaveBase.KeyPairFactory.createDefaultKeyPair();
+    this._baseNodeApi = BitclaveBase.NodeAPI.Builder()
+        .setHttpTransport(httpTransport)
+        .setKeyParHelper(keyPairHelper)
+        .setRepositoryStrategy(BitclaveBase.RepositoryStrategyType.Postgres)
+        .build();
 }
 
 WidgetView.prototype._onClickLogin = function (event) {
