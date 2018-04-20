@@ -1,11 +1,11 @@
 heroku_remotes:
-	git remote add heroku_prod https://git.heroku.com/base-auth-bitclave-com.git
+	git remote add heroku_staging https://git.heroku.com/base-auth-staging.git
 
-deploy_prod:
+deploy_staging:
 ifneq ($(shell git rev-parse --abbrev-ref HEAD),master)
 	$(error Wrong branch)
 else
-	git push heroku_prod -f HEAD:master
+	git push heroku_staging -f HEAD:master
 endif
 
 scss:
@@ -13,6 +13,9 @@ scss:
 
 js_prod:
 	npm run build_prod
+
+js_staging:
+	npm run build_staging
 
 js_dev:
 	npm run build_dev

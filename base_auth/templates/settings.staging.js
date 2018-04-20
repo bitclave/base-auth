@@ -1,6 +1,6 @@
 export default class Settings {
     static siteUrl() {
-        throw new Error('not implemented');
+        return 'https://base-auth-staging.herokuapp.com/';
     }
 
     static widgetLocation() {
