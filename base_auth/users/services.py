@@ -8,7 +8,7 @@ from typing import Any, Dict, Iterable, Tuple
 from base_client.client import BASEClient
 from base_client.encryption import encrypt_message
 from base_client.key_derivation import PublicKey, derive_keypair, pbkdf2
-from base_client.signatures import Signer
+from base_client.signatures import Signer, Verifier
 from django.conf import settings
 from django.utils import timezone
 
@@ -22,11 +22,10 @@ class BASELoginPasswordAuth:
     BASE_SIGNER_PUBLIC_KEY = settings.BASE_SIGNER_PUBLIC_KEY
 
     def __init__(self, application_public_key: str, application_origin: str,
-                 verification_message: str, user_permissions: Iterable[str], login: str,
-                 password: str) -> None:
+                 user_permissions: Iterable[str], login: str, password: str) -> None:
         self.application_public_key = application_public_key
         self.application_origin = application_origin
-        self.verification_message = verification_message
+        self.verification_message = ''.join(random.sample(string.ascii_letters, 32))
         self.user_permissions = user_permissions
         self.login = login
         self.password = password
@@ -43,6 +42,12 @@ class BASELoginPasswordAuth:
         auth_response = self.base_client.create_account(self.mnemonic, self.verification_message)
         if not auth_response.ok:
             raise RuntimeError('Failure during negotiation with BASE Node')
+
+        auth_json = auth_response.json()
+        verifier = Verifier(PublicKey.from_hex_compressed(auth_json['publicKey']))
+
+        if not verifier.verify_raw(auth_json['message'], auth_json['sig']):
+            raise RuntimeError('Signature mismatch')
 
         grant_access_response = self.base_client.grant_access_for_client(
             self.mnemonic, self.application_public_key, self.user_permissions)

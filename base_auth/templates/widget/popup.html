@@ -8,22 +8,61 @@
     <main class="main">
         <div class="container">
             <div class="row">
-                <div>
-                    <label for="input-mnemonic">
-                        {% trans "Mnemonic" %}
-                    </label>
-                    <input type="text" id="input-mnemonic" placeholder="Mnemonic">
-                </div>
-                <div>
-                    <button id="button-signin">
-                        {% trans "Sing In" %}
-                    </button>
-                </div>
-                <div>
-                    <button id="button-signup">
-                        {% trans "Sign Up" %}
-                    </button>
-                </div>
+                <p>
+                    <div>
+                        {% blocktrans trimmed %}
+                        Application {{ application_origin }} has requested access to the following scopes of your BASE Profile:
+                        {% endblocktrans %}
+                        <ul>
+                            {% for permission in user_permissions %}
+                            <li>{{ permission }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>
+                        {% blocktrans trimmed %}
+                        Application public key: {{ application_public_key }}
+                        {% endblocktrans %}
+                    </div>
+                    <div>
+                        {% blocktrans trimmed %}
+                        Fill in the following form to grant the access.
+                        {% endblocktrans %}
+                    </div>
+                </p>
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <p>
+                        <div>
+                            <label for="input-mnemonic">
+                                {% trans "Enter your mnemonic" %}
+                            </label>
+                        </div>
+                        <div>
+                            <input
+                                type="text"
+                                id="input-mnemonic"
+                                placeholder="{% trans 'Mnemonic' %}"
+                            >
+                        </div>
+                    </p>
+                    <p>{% trans "OR" %}</p>
+                    <p>
+                        {% include "base/form/fields/text.html" with field=form.login %}
+                    </p>
+                    <p>
+                        {% include "base/form/fields/password.html" with field=form.password %}
+                    </p>
+                    <p>
+                        <button id="button-signin" type="submit">
+                            {% trans "Sign In" %}
+                        </button>
+                        <button id="button-signup" type="submit">
+                            {% trans "Sign Up" %}
+                        </button>
+                    </p>
+                </form>
             </div>
         </div>
     </main>
@@ -35,6 +74,8 @@
      new BASEAuth.PopupView(
          "{{ SITE_URL }}",
          $('#input-mnemonic'),
+         $('#input-login'),
+         $('#input-password'),
          $('#button-signup'),
          $('#button-signin')
      );

@@ -1,4 +1,5 @@
 from base_auth.settings.base import *
+from base_auth.settings.base_auth import *
 from base_auth.settings.celery import *
 from base_auth.settings.logging import *
 from base_auth.settings.raven import *

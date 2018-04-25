@@ -19,7 +19,10 @@
 <script src="{% static 'js/sdk.js' %}"></script>
 <script>
  window.addEventListener('load', function () {
-     const widget = new BASEAuthSDK.Widget();
+     const widget = new BASEAuthSDK.Widget({
+         applicationPublicKey: '0200305e666720ceddca2a87b67bbed480cceb8f557a13523438fc04e381ff3b96',
+         userPermissions: [BASEAuthSDK.UserPermissions.WEALTH],
+     });
 
      widget.insertLoginButton("#base-login");
      widget.waitForLogin().then(function (account) {

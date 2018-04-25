@@ -6,16 +6,20 @@
 </button>
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/Bitclave-Base.Web.js' %}"></script>
+<script src="{% static 'js/Bitclave-Base.js' %}"></script>
 <script src="{% static 'js/site.js' %}"></script>
 <script>
  window.addEventListener("load", function () {
-     new BASEAuth.WidgetView(
-         "https://base2-bitclva-com.herokuapp.com",
+     const widgetView = new BASEAuth.WidgetView(
+         "{{ BASE_NODE_URL }}",
          $('.base-auth__open-popup-button'),
+         "{% trans 'Continue with BitClave' %}",
          "{% url 'widget:popup' %}",
          "{% trans 'Continue with BitClave' %}",
          "{{ SITE_URL }}"
      );
+
+     widgetView.disableButton();
+     widgetView.initialize().then(widgetView.enableButton.bind(widgetView));
  });
 </script>

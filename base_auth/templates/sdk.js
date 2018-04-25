@@ -1,31 +1,25 @@
 import IFrameRPC from './core/IFrameRPC.js';
 import Settings from 'settings';
 
-export {Widget};
+export const UserPermissions = {
+    WEALTH: 'wealth',  // TODO Загружать с бэкенда?
+};
 
-class BASENodeAPI {
-    constructor(widgetRpc) {
-        this._widgetRpc = widgetRpc;
-    }
-
-    getAllOffers () {
-        return this._widgetRpc.call('offerManager.getAllOffers', []);
-    }
-
-    getData() {
-        return this._widgetRpc.call('profileManager.getData', []);
-    }
-
-    updateData(data) {
-        return this._widgetRpc.call('profileManager.updateData', [data]);
-    }
-}
-
-class Widget {
-    constructor() {
+export class Widget {
+    constructor(options) {
         this._widgetIframe = null;
         this._widgetRpc = null;
         this._baseNodeApi = null;
+        this._applicationPublicKey = options.applicationPublicKey;
+        this._userPermissions = options.userPermissions;
+
+        if (!this._applicationPublicKey) {
+            throw new Error('applicationPublicKey is required');
+        }
+
+        if (!this._userPermissions) {
+            throw new Error('userPermissions is required');
+        }
     }
 
     get baseNodeAPI() {
@@ -42,11 +36,29 @@ class Widget {
         this._widgetIframe = iframe;
 
         this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, Settings.siteUrl());
-        this._widgetRpc.once('getOrigin').then(function (rpcCall) {
+        this._widgetRpc.once('handshake').then(rpcCall => {
             rpcCall.respond(
-                this._widgetIframe.contentWindow, Settings.siteUrl(), window.location.origin
+                this._widgetIframe.contentWindow,
+                Settings.siteUrl(),
+                true
             );
             this._baseNodeApi = new BASENodeAPI(this._widgetRpc);
+        });
+
+        this._widgetRpc.once('getApplicationPublicKey').then(function (rpcCall) {
+            rpcCall.respond(
+                this._widgetIframe.contentWindow,
+                Settings.siteUrl(),
+                this._applicationPublicKey
+            );
+        }.bind(this));
+
+        this._widgetRpc.once('getUserPermissions').then(function (rpcCall) {
+            rpcCall.respond(
+                this._widgetIframe.contentWindow,
+                Settings.siteUrl(),
+                this._userPermissions
+            );
         }.bind(this));
     }
 
@@ -55,5 +67,23 @@ class Widget {
             const account = rpcCall.args[0];
             return account;
         });
+    }
+}
+
+class BASENodeAPI {
+    constructor(widgetRpc) {
+        this._widgetRpc = widgetRpc;
+    }
+
+    getAllOffers () {
+        return this._widgetRpc.call('offerManager.getAllOffers', []).then(response => response.value);
+    }
+
+    getData() {
+        return this._widgetRpc.call('profileManager.getData', []).then(response => response.value);
+    }
+
+    updateData(data) {
+        return this._widgetRpc.call('profileManager.updateData', [data]).then(response => response.value);
     }
 }
