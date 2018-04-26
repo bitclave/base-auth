@@ -25,7 +25,7 @@ export HEROKU_SLUG_COMMIT=1
 
 export CELERY_ALWAYS_EAGER=1
 
+export SECRET_MNEMONIC=coil torch buzz spy hover access switch ecology section unfold acoustic enable
 export SECRET_MNEMONIC_DERIVATION_PEPPER=secret
 export BASE_NODE_URL=
 export BASE_SIGNER_URL=
-export BASE_SIGNER_PUBLIC_KEY=

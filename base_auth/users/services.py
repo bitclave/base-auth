@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, Tuple
 
 from base_client.client import BASEClient
 from base_client.encryption import encrypt_message
-from base_client.key_derivation import PublicKey, derive_keypair, pbkdf2
+from base_client.key_derivation import PublicKey, derive_keypair, derive_private_key, pbkdf2
 from base_client.signatures import Signer, Verifier
 from django.conf import settings
 from django.utils import timezone
@@ -16,10 +16,6 @@ from base_auth.clients.jsonrpc import JSONRPC
 
 
 class BASELoginPasswordAuth:
-    PEPPER = settings.SECRET_MNEMONIC_DERIVATION_PEPPER
-    BASE_NODE_URL = settings.BASE_NODE_URL
-    BASE_SIGNER_URL = settings.BASE_SIGNER_URL
-    BASE_SIGNER_PUBLIC_KEY = settings.BASE_SIGNER_PUBLIC_KEY
 
     def __init__(self, application_public_key: str, application_origin: str,
                  user_permissions: Iterable[str], login: str, password: str) -> None:
@@ -30,13 +26,14 @@ class BASELoginPasswordAuth:
         self.login = login
         self.password = password
 
-        self.mnemonic = pbkdf2(''.join([self.login, self.password, self.PEPPER]), 256)
+        self.mnemonic = pbkdf2(''.join(
+            [self.login, self.password, settings.SECRET_MNEMONIC_DERIVATION_PEPPER]), 256)
         self.keypair = derive_keypair(self.mnemonic)
         self.access_token = self._generate_access_token()
         self.expiration_date = timezone.now() + timedelta(days=30)
 
-        self.base_client = BASEClient(self.BASE_NODE_URL)
-        self.base_signer_rpc = JSONRPC(self.BASE_SIGNER_URL)
+        self.base_client = BASEClient(settings.BASE_NODE_URL)
+        self.base_signer_rpc = JSONRPC(settings.BASE_SIGNER_URL)
 
     def authenticate(self) -> Tuple[str, str, datetime]:
         auth_response = self.base_client.create_account(self.mnemonic, self.verification_message)
@@ -72,11 +69,13 @@ class BASELoginPasswordAuth:
         payload['expireDate'] = self.expiration_date.isoformat()
         payload['permissions'] = list(self.user_permissions)
 
+        base_signer_public_key = self.base_signer_rpc('getPublicKey')['result']
+
         payload_json = json.dumps(payload)
         payload_encrypted = encrypt_message(
-            self.keypair.private_key,
-            PublicKey.from_hex_compressed(self.BASE_SIGNER_PUBLIC_KEY),
+            derive_private_key(settings.SECRET_MNEMONIC),
+            PublicKey.from_hex_compressed(base_signer_public_key),
             payload_json,
         )
 
-        self.base_signer_rpc('signMessage', payload_encrypted)
+        self.base_signer_rpc('authenticatorRegisterClient', payload_encrypted)
