@@ -3,29 +3,29 @@ import IFrameRPC from '../core/IFrameRPC';
 
 export default class PopupView {
     constructor(widgetOrigin, $inputMnemonic, $buttonSignup, $buttonSignin) {
-        this.widgetOrigin = widgetOrigin;
-        this.widgetRpc = new IFrameRPC(window.opener, widgetOrigin);
+        this._widgetOrigin = widgetOrigin;
+        this._widgetRpc = new IFrameRPC(window.opener, widgetOrigin);
 
-        this.$inputMnemonic = $inputMnemonic;
-        this.$buttonSignup = $buttonSignup;
-        this.$buttonSignin = $buttonSignin;
+        this._$inputMnemonic = $inputMnemonic;
+        this._$buttonSignup = $buttonSignup;
+        this._$buttonSignin = $buttonSignin;
 
-        this.$buttonSignup.on('click', this._onClickSignin.bind(this));
-        this.$buttonSignin.on('click', this._onClickSignin.bind(this));
+        this._$buttonSignup.on('click', this._onClickSignin.bind(this));
+        this._$buttonSignin.on('click', this._onClickSignin.bind(this));
     }
 
-    _onClickSignin() {
+    _onClickSignin(e) {
         const mnemonic = this._parseMnemonic();
 
-        if (!mnemonic) {
+        if (mnemonic) {
+            e.preventDefault();
+            this._widgetRpc.call('submitMnenomic', [mnemonic]);
+            window.close();
             return;
         }
-
-        this.widgetRpc.call('submitMnenomic', [mnemonic]);
-        window.close();
     }
 
     _parseMnemonic() {
-        return this.$inputMnemonic.val();
+        return this._$inputMnemonic.val();
     }
 }

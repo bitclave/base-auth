@@ -1,31 +1,16 @@
 import IFrameRPC from './core/IFrameRPC.js';
 import Settings from 'settings';
 
-export {Widget};
-
-class BASENodeAPI {
-    constructor(widgetRpc) {
-        this._widgetRpc = widgetRpc;
-    }
-
-    getAllOffers () {
-        return this._widgetRpc.call('offerManager.getAllOffers', []);
-    }
-
-    getData() {
-        return this._widgetRpc.call('profileManager.getData', []);
-    }
-
-    updateData(data) {
-        return this._widgetRpc.call('profileManager.updateData', [data]);
-    }
-}
-
-class Widget {
-    constructor() {
+export class Widget {
+    constructor(options) {
         this._widgetIframe = null;
         this._widgetRpc = null;
         this._baseNodeApi = null;
+        this._verificationMessage = options.verificationMessage;
+
+        if (!this._verificationMessage || this._verificationMessage.length < 10) {
+            throw new Error('Verification message length is 10 characters minimum');
+        }
     }
 
     get baseNodeAPI() {
@@ -42,12 +27,14 @@ class Widget {
         this._widgetIframe = iframe;
 
         this._widgetRpc = new IFrameRPC(this._widgetIframe.contentWindow, Settings.siteUrl());
-        this._widgetRpc.once('getOrigin').then(function (rpcCall) {
+        this._widgetRpc.once('handshake').then(rpcCall => {
             rpcCall.respond(
-                this._widgetIframe.contentWindow, Settings.siteUrl(), window.location.origin
+                this._widgetIframe.contentWindow,
+                Settings.siteUrl(),
+                {verificationMessage: this._verificationMessage}
             );
             this._baseNodeApi = new BASENodeAPI(this._widgetRpc);
-        }.bind(this));
+        });
     }
 
     waitForLogin() {
@@ -55,5 +42,23 @@ class Widget {
             const account = rpcCall.args[0];
             return account;
         });
+    }
+}
+
+class BASENodeAPI {
+    constructor(widgetRpc) {
+        this._widgetRpc = widgetRpc;
+    }
+
+    getAllOffers () {
+        return this._widgetRpc.call('offerManager.getAllOffers', []).then(response => response.value);
+    }
+
+    getData() {
+        return this._widgetRpc.call('profileManager.getData', []).then(response => response.value);
+    }
+
+    updateData(data) {
+        return this._widgetRpc.call('profileManager.updateData', [data]).then(response => response.value);
     }
 }

@@ -16,6 +16,13 @@ module.exports = (env) => (
                     settings: path.join(__dirname, 'base_auth', 'templates', `settings.${env}`),
                 }
             },
+            node: {
+                dgram: 'empty',
+                fs: 'empty',
+                net: 'empty',
+                tls: 'empty',
+                child_process: 'empty',
+            },
         },
         {
             entry: './base_auth/templates/sdk.js',

@@ -8,22 +8,29 @@
     <main class="main">
         <div class="container">
             <div class="row">
-                <div>
-                    <label for="input-mnemonic">
-                        {% trans "Mnemonic" %}
-                    </label>
-                    <input type="text" id="input-mnemonic" placeholder="Mnemonic">
-                </div>
-                <div>
-                    <button id="button-signin">
-                        {% trans "Sing In" %}
+                <p>
+                    <div>
+                        <label for="input-mnemonic">
+                            {% trans "Enter your mnemonic" %}
+                        </label>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            id="input-mnemonic"
+                            placeholder="{% trans 'Mnemonic' %}"
+                        >
+                    </div>
+                </p>
+
+                <p>
+                    <button id="button-signin" type="submit">
+                        {% trans "Sign In" %}
                     </button>
-                </div>
-                <div>
-                    <button id="button-signup">
+                    <button id="button-signup" type="submit">
                         {% trans "Sign Up" %}
                     </button>
-                </div>
+                </p>
             </div>
         </div>
     </main>

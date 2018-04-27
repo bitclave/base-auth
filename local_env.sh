@@ -24,3 +24,5 @@ export RAVEN_DSN=
 export HEROKU_SLUG_COMMIT=1
 
 export CELERY_ALWAYS_EAGER=1
+
+export BASE_NODE_URL=https://base2-bitclva-com.herokuapp.com/

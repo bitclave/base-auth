@@ -32,6 +32,16 @@ RPCCall.prototype.respond = function (targetWindow, targetOrigin, value) {
     );
 };
 
+class RPCResponse {
+    constructor(event) {
+        this.event = event;
+    }
+
+    get value() {
+        return this.event.data.rpcCall.value;
+    }
+}
+
 export default function IFrameRPC(targetWindow, targetOrigin) {
     this._targetWindow = targetWindow;
     this._targetOrigin = targetOrigin;
@@ -106,7 +116,7 @@ IFrameRPC.prototype._onMessage = function (event) {
     }
 
     if (this._calls[event.data.rpcCall.id]) {
-        this._calls[event.data.rpcCall.id].resolve(event.data.rpcCall.value);
+        this._calls[event.data.rpcCall.id].resolve(new RPCResponse(event));
         delete this._calls[event.data.rpcCall.id];
     }
 };
