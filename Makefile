@@ -8,9 +8,6 @@ update_base_client_js:
 	npm install $(base_client_js_dir)/example/public/base-lib/bitclave-base
 	rm -rf $(base_client_js_dir)
 
-js_prod:
-	npm run build_prod
-
 js_staging:
 	npm run build_staging
 

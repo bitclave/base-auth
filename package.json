@@ -6,7 +6,6 @@
   "scripts": {
     "postinstall": "make postinstall",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build_prod": "webpack --mode production --env production",
     "build_staging": "webpack --mode production --env staging",
     "build_dev": "webpack --mode development --env development --watch"
   },
