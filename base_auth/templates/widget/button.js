@@ -1,10 +1,5 @@
 import IFrameRPC from '../core/IFrameRPC.js';
-import Base, {
-    KeyPairFactory,
-    Permissions,
-    RepositoryStrategyType,
-    TransportFactory,
-} from 'bitclave-base';
+import Base from 'bitclave-base';
 
 export default class WidgetView {
     constructor(
@@ -22,13 +17,9 @@ export default class WidgetView {
 
         this._applicationVerificationMessage = null;
 
-        const httpTransport = TransportFactory.createHttpTransport(baseNodeApiUrl);
-        const keyPairHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
-        this._baseNodeApi = Base.Builder()
-            .setHttpTransport(httpTransport)
-            .setKeyParHelper(keyPairHelper)
-            .setRepositoryStrategy(RepositoryStrategyType.Postgres)
-            .build();
+        this._baseNodeApi = null;
+        this._baseNodeApiUrl = baseNodeApiUrl;
+
         this._$button.on('click', this._onClickLogin.bind(this));
     }
 
@@ -39,6 +30,11 @@ export default class WidgetView {
             this._parentOrigin = response.event.origin;
             this._parentRpc = new IFrameRPC(this._parent, this._parentOrigin);
             this._applicationVerificationMessage = response.value.verificationMessage;
+
+            const parentOriginParser = document.createElement('a');
+            parentOriginParser.href = this._parentOrigin;
+
+            this._baseNodeApi = new Base(this._baseNodeApiUrl, parentOriginParser.hostname);
         });
     }
 
